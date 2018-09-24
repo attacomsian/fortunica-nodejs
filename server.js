@@ -18,10 +18,10 @@ mongoose.connect(
     .catch(err => console.log(err));
 
 //load models
-const User = require('./api/models/user');
-const Client = require('./api/models/client');
-const Question = require('./api/models/question');
-const Answer = require('./api/models/answer');
+const User = require('./api/model/user');
+const Client = require('./api/model/client');
+const Question = require('./api/model/question');
+const Answer = require('./api/model/answer');
 
 // use body parser so we can get info from POST and/or URL parameters
 app.use(bodyParser.urlencoded({extended: false}));
