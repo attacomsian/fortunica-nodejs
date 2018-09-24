@@ -7,15 +7,21 @@ const cors = require('cors');
 //load configuration
 const config = require('./config');
 
-//create express app
+//create express api
 const app = express();
 
 // connect to mongodb database at mLab
 mongoose.connect(
     config.mongoUrl,
     {useNewUrlParser: true}) //need this for api support
-    .then(() => console.log("mongoDB connected"))
+    .then(() => console.log("MongoDB connected"))
     .catch(err => console.log(err));
+
+//load models
+const User = require('./api/models/user');
+const Client = require('./api/models/client');
+const Question = require('./api/models/question');
+const Answer = require('./api/models/answer');
 
 // use body parser so we can get info from POST and/or URL parameters
 app.use(bodyParser.urlencoded({extended: false}));
@@ -28,10 +34,6 @@ app.use(morgan('dev'));
 app.use(cors({
     maxAge: 3600 //cache request for one hour
 }));
-
-app.get('/', (req, res) => {
-    res.send("hello!!!");
-});
 
 //error handling 4x and 5x
 app.use((req, res) => {
