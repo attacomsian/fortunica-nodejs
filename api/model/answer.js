@@ -4,7 +4,7 @@ let Schema = mongoose.Schema;
 // answer schema definition
 const AnswerSchema = new Schema({
     content: String,
-    client: {type: Schema.Types.ObjectId, ref: 'Client'},
+    user: {type: Schema.Types.ObjectId, ref: 'User'},
     question: {type: Schema.Types.ObjectId, ref: 'Question'},
     createdAt: {
         type: Date,

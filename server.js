@@ -35,18 +35,22 @@ app.use(cors({
     maxAge: 3600 //cache request for one hour
 }));
 
+//register all routes
+const routes = require('./api/route/fortunica');
+routes(app, express);
+
 //error handling 4x and 5x
 app.use((req, res) => {
-    res.status(404).send({success: false, message: req.originalUrl + ' not found'})
+    res.status(404).json({message: req.originalUrl + ' not found'})
 });
 
 app.use((err, req, res, next) => {
-    res.status(500).send({success: false, message: 'Interval server error', data: err});
+    res.status(500).send({err});
 });
 
 //start server
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-    console.log('Fortunica is listening at : ' + port);
+    console.log('Fortunica api is listening at : ' + port);
 });
