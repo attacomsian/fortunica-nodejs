@@ -1,5 +1,8 @@
 let mongoose = require('mongoose');
 let Question = mongoose.model('Question');
+let User = mongoose.model('User');
+
+const webpush = require('../integration/web-push/web-push');
 
 const userQuestions = (req, res) => {
     Question.find({user: req.decode.id})
@@ -37,15 +40,21 @@ const saveQuestion = (req, res) => {
     } else {
         let question = new Question({
             content: req.body.content,
-            client: req.body.client,
-            user: req.decode.id
+            user: req.body.user,
+            client: req.decode.id
         });
-        //save client into DB
+        //save client.js into DB
         question.save((err, question) => {
             if (err) {
                 res.send(err);
             } else {
-                res.json({message: 'Question added.', question});
+                //send web push notification
+                User.findById(req.body.user, (err, user) => {
+                    if (!err && user.pushToken.length !== 0) {
+                        webpush.sendNotification(req.decode.name + ' asked a new question.', req.body.content);
+                    }
+                    res.json({message: 'Question added.', question});
+                });
             }
         });
     }

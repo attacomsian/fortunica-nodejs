@@ -2,6 +2,7 @@ const user = require('../controller/user');
 const client = require('../controller/client');
 const question = require('../controller/question');
 const answer = require('../controller/answer');
+const notification = require('../controller/notification');
 
 const jwtVerify = require('../middleware/jwt-auth');
 
@@ -16,11 +17,11 @@ module.exports = (app, express) => {
     router.route('/user/login')
         .post(user.login);
 
-    //client sign up and login
-    router.route('/client/signup')
+    //client.js sign up and login
+    router.route('/client.js/signup')
         .post(client.signup);
 
-    router.route('/client/login')
+    router.route('/client.js/login')
         .post(client.login);
 
      // JWT Middleware - TOKEN based authentication
@@ -34,8 +35,8 @@ module.exports = (app, express) => {
     router.route('/user/questions')
         .get(question.userQuestions);
 
-    // get all client questions
-    router.route('/client/questions')
+    // get all client.js questions
+    router.route('/client.js/questions')
         .get(question.clientQuestions);
 
     // save and get question
@@ -51,6 +52,10 @@ module.exports = (app, express) => {
     router.route('/answer/:id?')
         .post(answer.saveAnswer)
         .get(answer.getAnswer);
+
+    //push notification subscription
+    router.route('/push/subscribe')
+        .post(notification.subscribe);
 
     //apply /api/v1 prefix to all routes
     app.use('/api/v1', router);

@@ -1,7 +1,7 @@
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
-// client schema definition
+// client.js schema definition
 const ClientSchema = new Schema({
     name: String,
     email: {

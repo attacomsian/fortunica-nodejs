@@ -1,6 +1,7 @@
 let mongoose = require('mongoose');
 let Question = mongoose.model('Question');
 let Answer = mongoose.model('Answer');
+let Client = mongoose.model('Client');
 
 const userAnswers = (req, res) => {
     Answer.find({user: req.decode.id})
@@ -33,10 +34,18 @@ const saveAnswer = (req, res) => {
             } else {
                 //update parent question here
                 Question.findByIdAndUpdate(req.body.question,
-                    {$set: {answer: answer._id}}, function (err, question) {
-                        //TODO: info user?
+                    {$set: {answer: answer._id}}, (err, question) => {
+                        if (!err) {
+                            //send web push notification
+                            Client.findById(question.client, (err, client) => {
+                                if (!err && client.pushToken.length !== 0) {
+                                    webpush.sendNotification(req.decode.name + ' replied to your question.', req.body.content);
+                                }
+                                res.json({message: 'Answer added.', answer});
+                            });
+                        }
+                        res.json({message: 'Answer added.', answer});
                     });
-                res.json({message: 'Answer added.', question: answer});
             }
         });
     }

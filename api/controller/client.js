@@ -16,7 +16,7 @@ const signup = (req, res) => {
             email: req.body.email.toLowerCase(),
             password: encryptPassword.hash(req.body.password),
         });
-        //save client into DB
+        //save client.js into DB
         client.save((err, client) => {
             if (err) {
                 res.send(err);
@@ -41,7 +41,7 @@ const login = (req, res) => {
                         res.status(401).json({message: 'Password does not match.'});
                     } else {
                         // if user is found and password is right - create a token
-                        const token = jwt.sign({id: client._id, type: 'client'}, config.secret, {
+                        const token = jwt.sign({id: client._id, name: client.name}, config.secret, {
                             // expires in 30 days
                             expiresIn: 30 * 24 * 60 * 60
                         });
