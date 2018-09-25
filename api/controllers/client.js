@@ -41,7 +41,7 @@ const login = (req, res) => {
                         res.status(401).json({message: 'Password does not match.'});
                     } else {
                         // if user is found and password is right - create a token
-                        const token = jwt.sign({id: client._id, name: client.name}, config.secret, {
+                        const token = jwt.sign({id: client._id, name: client.name, type: 'user'}, config.secret, {
                             // expires in 30 days
                             expiresIn: 30 * 24 * 60 * 60
                         });
