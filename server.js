@@ -11,24 +11,27 @@ const config = require('./config');
 const app = express();
 
 // connect to mongodb database at mLab
+const db = process.env.NODE_ENV === 'test' ? config.mongoTestUrl : config.mongoUrl;
 mongoose.connect(
-    config.mongoUrl,
+    db,
     {useNewUrlParser: true}) //need this for api support
     .then(() => console.log("MongoDB connected"))
     .catch(err => console.log(err));
 
 //load models
-const User = require('./api/model/user');
-const Client = require('./api/model/client');
-const Question = require('./api/model/question');
-const Answer = require('./api/model/answer');
+const User = require('./api/models/user');
+const Client = require('./api/models/client');
+const Question = require('./api/models/question');
+const Answer = require('./api/models/answer');
 
 // use body parser so we can get info from POST and/or URL parameters
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-// use morgan to log requests to the console
-app.use(morgan('dev'));
+// use morgan to log requests for dev environment
+if(process.env.NODE_ENV !== 'test'){
+    app.use(morgan('dev'));
+}
 
 //Add CORS
 app.use(cors({
@@ -36,7 +39,7 @@ app.use(cors({
 }));
 
 //register all routes
-const routes = require('./api/route/fortunica');
+const routes = require('./api/routes/fortunica');
 routes(app, express);
 
 //error handling 4x and 5x
@@ -54,3 +57,5 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log('Fortunica api is listening at : ' + port);
 });
+
+module.exports = app; // for testing

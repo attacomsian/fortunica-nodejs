@@ -4,7 +4,7 @@ let Client = mongoose.model('Client');
 
 const subscribe = (req, res) => {
     if (req.body.type === 'client') {
-        Client.findByIdAndUpdate(req.decode.id,
+        Client.findByIdAndUpdate(req.decoded.id,
             {$set: {pushToken: req.body.subscription}},
             (err, client) => {
                 if (err) {
@@ -14,7 +14,7 @@ const subscribe = (req, res) => {
                 }
             });
     } else {
-        User.findByIdAndUpdate(req.decode.id,
+        User.findByIdAndUpdate(req.decoded.id,
             {$set: {pushToken: req.body.subscription}},
             (err, user) => {
                 if (err) {

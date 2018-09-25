@@ -1,8 +1,8 @@
-const user = require('../controller/user');
-const client = require('../controller/client');
-const question = require('../controller/question');
-const answer = require('../controller/answer');
-const notification = require('../controller/notification');
+const user = require('../controllers/user');
+const client = require('../controllers/client');
+const question = require('../controllers/question');
+const answer = require('../controllers/answer');
+const notification = require('../controllers/notification');
 
 const jwtVerify = require('../middleware/jwt-auth');
 
@@ -18,10 +18,10 @@ module.exports = (app, express) => {
         .post(user.login);
 
     //client.js sign up and login
-    router.route('/client.js/signup')
+    router.route('/client/signup')
         .post(client.signup);
 
-    router.route('/client.js/login')
+    router.route('/client/login')
         .post(client.login);
 
      // JWT Middleware - TOKEN based authentication
@@ -36,7 +36,7 @@ module.exports = (app, express) => {
         .get(question.userQuestions);
 
     // get all client.js questions
-    router.route('/client.js/questions')
+    router.route('/client/questions')
         .get(question.clientQuestions);
 
     // save and get question

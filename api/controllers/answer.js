@@ -3,8 +3,10 @@ let Question = mongoose.model('Question');
 let Answer = mongoose.model('Answer');
 let Client = mongoose.model('Client');
 
+const webpush = require('../integrations/web-push/web-push');
+
 const userAnswers = (req, res) => {
-    Answer.find({user: req.decode.id})
+    Answer.find({user: req.decoded.id})
         .populate('question')
         .sort({createdAt: -1})
         .exec((err, answers) => {
@@ -25,7 +27,7 @@ const saveAnswer = (req, res) => {
         let answer = new Answer({
             content: req.body.content,
             question: req.body.question,
-            user: req.decode.id,
+            user: req.decoded.id,
         });
         //save answer into DB
         answer.save((err, answer) => {
@@ -33,18 +35,19 @@ const saveAnswer = (req, res) => {
                 res.send(err);
             } else {
                 //update parent question here
-                Question.findByIdAndUpdate(req.body.question,
+                Question.findOneAndUpdate({_id: req.body.question},
                     {$set: {answer: answer._id}}, (err, question) => {
                         if (!err) {
                             //send web push notification
                             Client.findById(question.client, (err, client) => {
-                                if (!err && client.pushToken.length !== 0) {
-                                    webpush.sendNotification(req.decode.name + ' replied to your question.', req.body.content);
+                                if (!err && client.pushToken && client.pushToken.length !== 0) {
+                                    webpush.sendNotification(client.pushToken, req.decoded.name + ' replied to your question.', req.body.content);
                                 }
                                 res.json({message: 'Answer added.', answer});
                             });
+                        } else {
+                            res.json({message: 'Answer added.', answer});
                         }
-                        res.json({message: 'Answer added.', answer});
                     });
             }
         });
