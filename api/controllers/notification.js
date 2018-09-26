@@ -13,7 +13,9 @@ const subscribe = (req, res) => {
                     res.send(err);
                 } else {
                     //send confirmation notification
-                    webpush.sendNotification(req.body.subscription, "Success!", "You subscribed to push notifications.");
+                    if(!client.pushToken){
+                      webpush.sendNotification(req.body.subscription, "Success!", "You have subscribed to push notifications.");
+                    }
                     //return response
                     res.status(201).json({});
                 }
@@ -26,7 +28,9 @@ const subscribe = (req, res) => {
                     res.send(err);
                 } else {
                     //send confirmation notification
-                    webpush.sendNotification(req.body.subscription, "Success!", "You subscribed to push notifications.");
+                    if(!user.pushToken){
+                      webpush.sendNotification(req.body.subscription, "Success!", "You have subscribed to push notifications.");
+                    }
                     //return response
                     res.status(201).json({});
                 }

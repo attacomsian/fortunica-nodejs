@@ -7,9 +7,9 @@ module.exports = (req, res, next) => {
     // decode token
     if (token) {
         // verifies secret and checks exp
-        jwt.verify(token, config.secret, function (err, decoded) {
+        jwt.verify(token, config.secret, (err, decoded) => {
             if (err) {
-                return res.status(401).json({status: false, message: 'Failed to authenticate token.'});
+                return res.status(401).json({message: 'Failed to authenticate token.'});
             } else {
                 // if everything is good, save to request for use in other routes
                 req.decoded = decoded;
@@ -19,7 +19,6 @@ module.exports = (req, res, next) => {
     } else {
         // if there is no token
         return res.status(403).json({
-            status: false,
             message: 'No token provided.'
         });
     }
