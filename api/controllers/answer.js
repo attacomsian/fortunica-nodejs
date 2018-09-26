@@ -8,6 +8,7 @@ const webpush = require('../integrations/web-push/web-push');
 const userAnswers = (req, res) => {
     Answer.find({user: req.decoded.id})
         .populate('question')
+        .populate('client')
         .sort({createdAt: -1})
         .exec((err, answers) => {
             if (err) {
@@ -40,8 +41,8 @@ const saveAnswer = (req, res) => {
                         if (!err) {
                             //send web push notification
                             Client.findById(question.client, (err, client) => {
-                                if (!err && client.pushToken && client.pushToken.length !== 0) {
-                                    webpush.sendNotification(client.pushToken, req.decoded.name + ' replied to your question.', req.body.content);
+                                if (!err && client.pushToken) {
+                                  webpush.sendNotification(client.pushToken, req.decoded.name + ' replied to your question.', req.body.content);
                                 }
                                 res.json({message: 'Answer added.', answer});
                             });

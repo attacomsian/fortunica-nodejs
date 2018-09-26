@@ -7,6 +7,7 @@ const webpush = require('../integrations/web-push/web-push');
 const userQuestions = (req, res) => {
     Question.find({user: req.decoded.id})
         .populate('client')
+        .populate('user')
         .populate('answer')
         .sort({createdAt: -1})
         .exec((err, questions) => {
@@ -21,6 +22,7 @@ const userQuestions = (req, res) => {
 const clientQuestions = (req, res) => {
     Question.find({client: req.decoded.id})
         .populate('user')
+        .populate('client')
         .populate('answer')
         .sort({createdAt: -1})
         .exec((err, questions) => {
@@ -50,7 +52,7 @@ const saveQuestion = (req, res) => {
             } else {
                 //send web push notification
                 User.findById(req.body.user, (err, user) => {
-                    if (!err && user.pushToken && user.pushToken.length !== 0) {
+                    if (!err && user.pushToken) {
                         webpush.sendNotification(user.pushToken, req.decoded.name + ' asked a new question.', req.body.content);
                     }
                     res.json({message: 'Question added.', question});

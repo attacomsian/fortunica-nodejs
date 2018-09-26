@@ -12,7 +12,6 @@ const sendNotification = (token, title, body) => {
           icon: 'assets/icons/icon-512x512.png'
         }
     };
-
     //send push notification
     webpush.sendNotification(JSON.parse(token), JSON.stringify(payload))
         .then((data) => {})
